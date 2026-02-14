@@ -1,161 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Our Love Journey</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Google Fonts for a romantic touch -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+
+  <!-- Modern, romantic fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
-    /* Global Styles */
-    body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-      scroll-behavior: smooth;
-    }
-    section {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s ease-out, transform 1s ease-out;
-    }
-    section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3rem;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      line-height: 1.5;
-    }
-    .start-button {
-      margin-top: 30px;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.8);
-      color: #333;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .start-button:hover {
-      background: rgba(255, 255, 255, 1);
-    }
-    /* Decorative rose image style */
-    .rose {
-      max-width: 100px; /* Reduced from 200px */
-      margin: 0 auto 20px auto;
-      display: block;
-      border-radius: 50%;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    :root{
+      --bg1:#0b0b10;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --stroke: rgba(255,255,255,.14);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+
+      --radius: 22px;
+      --radius-sm: 16px;
+
+      --accent1:#ff4d6d;
+      --accent2:#7c3aed;
+      --accent3:#22c55e;
+
+      --max: 980px;
     }
 
-    /* Section-specific Styles */
-    #welcome {
-      background: linear-gradient(to right, #ff9a9e, #fad0c4);
-      color: #fff;
-      flex-direction: column;
+    *{ box-sizing:border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,77,109,.28), transparent 55%),
+                  radial-gradient(900px 600px at 80% 25%, rgba(124,58,237,.28), transparent 55%),
+                  radial-gradient(900px 700px at 55% 90%, rgba(34,197,94,.10), transparent 60%),
+                  linear-gradient(180deg, #06060a, #0b0b10 45%, #070710);
+      overflow-x:hidden;
+      scroll-behavior:smooth;
     }
-    #first-meeting {
-      background: linear-gradient(to right, #a18cd1, #fbc2eb);
-      color: #fff;
-      flex-direction: column;
+
+    /* Subtle animated grain + glow */
+    .grain{
+      pointer-events:none;
+      position:fixed; inset:-20%;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      opacity:.10;
+      mix-blend-mode:overlay;
+      transform: rotate(8deg);
+      animation: drift 18s linear infinite;
     }
-    #journey {
-      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
-      color: #fff;
-      flex-direction: column;
+    @keyframes drift{
+      0%{ transform: translate3d(-2%, -2%, 0) rotate(8deg); }
+      50%{ transform: translate3d(2%, 1%, 0) rotate(8deg); }
+      100%{ transform: translate3d(-2%, -2%, 0) rotate(8deg); }
     }
-    #forever {
-      background: linear-gradient(to right, #fdcbf1, #e6dee9);
-      color: #fff;
-      flex-direction: column;
+
+    /* Top nav */
+    header{
+      position:fixed; top:0; left:0; right:0;
+      z-index:50;
+      padding: 14px 16px;
+      display:flex; justify-content:center;
+    }
+    .nav{
+      width:min(var(--max), calc(100% - 24px));
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 12px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(0,0,0,.25);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:600;
+      letter-spacing:.2px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      box-shadow: 0 0 0 4px rgba(255,77,109,.15);
+    }
+    .nav a{
+      color: var(--muted);
+      text-decoration:none;
+      font-size: .92rem;
+      padding: 8px 10px;
+      border-radius: 999px;
+      transition: background .2s ease, color .2s ease, transform .2s ease;
+    }
+    .nav a:hover{
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    main{ padding-top: 84px; }
+
+    section{
+      min-height: 100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 28px 16px;
+    }
+
+    .wrap{
+      width:min(var(--max), 100%);
+      display:grid;
+      gap:18px;
+    }
+
+    /* Hero-like card */
+    .card{
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      padding: 26px;
+      position:relative;
+      overflow:hidden;
+      transform: translateY(14px);
+      opacity: 0;
+      transition: opacity .9s ease, transform .9s ease;
+    }
+    .card.visible{
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(800px 260px at 15% 10%, rgba(255,77,109,.20), transparent 60%),
+                  radial-gradient(700px 240px at 90% 35%, rgba(124,58,237,.18), transparent 60%);
+      filter: blur(2px);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .content{
+      position:relative;
+      display:grid;
+      gap: 14px;
+    }
+
+    h1, h2{
+      margin:0;
+      font-family: "Playfair Display", serif;
+      letter-spacing:.3px;
+      line-height: 1.1;
+    }
+    h1{ font-size: clamp(2.15rem, 4.2vw, 3.4rem); }
+    h2{ font-size: clamp(1.55rem, 3.2vw, 2.2rem); }
+
+    p{
+      margin:0;
+      color: var(--muted);
+      font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+      line-height: 1.6;
+      max-width: 70ch;
+    }
+
+    .pill-row{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top: 6px;
+    }
+    .pill{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: .92rem;
+      color: rgba(255,255,255,.80);
+      display:flex; align-items:center; gap:8px;
+    }
+    .pill b{ color: var(--text); font-weight:600; }
+
+    /* Buttons */
+    .actions{
+      display:flex; flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    button{
+      appearance:none;
+      border:0;
+      cursor:pointer;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight:600;
+      font-size: 1rem;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .btn-primary{
+      color:#0b0b10;
+      background: linear-gradient(135deg, #ffd1dc, #ff4d6d);
+      box-shadow: 0 14px 34px rgba(255,77,109,.25);
+    }
+    .btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 18px 40px rgba(255,77,109,.30); }
+    .btn-ghost{
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--stroke);
+    }
+    .btn-ghost:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+
+    /* Media card */
+    .media{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      align-items:stretch;
+    }
+    @media (max-width: 860px){
+      .media{ grid-template-columns: 1fr; }
+    }
+
+    .photo{
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
+      min-height: 260px;
+      position:relative;
+      box-shadow: 0 12px 32px rgba(0,0,0,.35);
+    }
+    .photo img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+      transition: transform 1.2s ease;
+    }
+    .photo:hover img{ transform: scale(1.07); }
+
+    .photo::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(600px 260px at 25% 15%, rgba(255,255,255,.20), transparent 60%),
+                  linear-gradient(180deg, transparent 20%, rgba(0,0,0,.35));
+      pointer-events:none;
+    }
+
+    /* Timeline */
+    .timeline{
+      display:grid;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .step{
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      padding: 12px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+    }
+    .badge{
+      flex:0 0 auto;
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(255,77,109,.95), rgba(124,58,237,.75));
+      box-shadow: 0 10px 20px rgba(124,58,237,.18);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700;
+      color:#0b0b10;
+    }
+    .step p{ margin-top: 2px; }
+
+    /* Footer hint */
+    .hint{
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: .92rem;
+      margin-top: 8px;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .grain{ animation:none; }
+      .card{ transition:none; opacity:1; transform:none; }
+      body{ scroll-behavior:auto; }
+      .photo img{ transition:none; }
+      button{ transition:none; }
     }
   </style>
 </head>
+
 <body>
-  <!-- Section 1: Welcome -->
-  <section id="welcome" class="visible">
-    <div>
-      <h1>Happy Valentine’s Day, Baby</h1>
-      <p>Ngiyakutsandza – I love you with all my heart.</p>
-      <button class="start-button" onclick="scrollToSection('first-meeting')">Begin Our Journey</button>
-    </div>
-  </section>
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- Section 2: Our First Meeting -->
-  <section id="first-meeting">
-    <div>
-      <h1>Poem</h1>
-      <img src="./roses.jpg" alt="Rose" class="rose">
-      <p>
-        Roses are red, violets are blue,<br/>
-        I love you more than a bowl of Tofu 😂 
-      </p>
-      <button class="start-button" onclick="scrollToSection('journey')">Next</button>
-    </div>
-  </section>
+  <header>
+    <nav class="nav" aria-label="Love Journey Navigation">
+      <div class="brand"><span class="dot"></span> Our Love Journey</div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <a href="#welcome">Welcome</a>
+        <a href="#poem">Poem</a>
+        <a href="#journey">Journey</a>
+        <a href="#forever">Forever</a>
+      </div>
+    </nav>
+  </header>
 
-  <!-- Section 3: Our Journey -->
-  <section id="journey">
-    <div>
-      <h1>Our Journey (2015 - 2025)</h1>
-      <p>
-        Every shared smile, every whispered dream, has woven a tapestry of memories that enrich our lives.<br/>
-        Our love is a fusion of modern passion and timeless commitment
-      </p>
-      <button class="start-button" onclick="scrollToSection('forever')">Continue</button>
-    </div>
-  </section>
+  <main>
+    <!-- Section 1 -->
+    <section id="welcome">
+      <div class="wrap">
+        <div class="card visible">
+          <div class="content">
+            <h1>Happy Valentine’s Day, Baby ❤️</h1>
+            <p>Ngiyakutsandza — I love you with all my heart. Today is a little reminder that you’re my favorite place to be.</p>
 
-  <!-- Section 4: Forever & Always -->
-  <section id="forever">
-    <div>
-      <h1>Forever & Always</h1>
-      <p>
-        Ngiyakutsandza, now and forever.
-      </p>
-      <img src="./FamilyShoot-24.jpg" alt="Family" class="rose">
-      <button class="start-button" onclick="scrollToSection('welcome')">Replay Our Story</button>
-    </div>
-  </section>
+            <div class="pill-row">
+              <div class="pill">💗 <b>Us</b> > everything</div>
+              <div class="pill">✨ More love, less stress</div>
+              <div class="pill">🏡 Home is you</div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-primary" onclick="scrollToSection('poem')">
+                Begin Our Journey <span aria-hidden="true">→</span>
+              </button>
+              <button class="btn-ghost" onclick="toggleMusic()">
+                <span id="musicIcon" aria-hidden="true">♪</span>
+                <span id="musicText">Play music</span>
+              </button>
+            </div>
+
+            <div class="hint">Tip: Scroll, or use the menu at the top.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section id="poem">
+      <div class="wrap">
+        <div class="card">
+          <div class="content">
+            <h2>Poem 🌹</h2>
+            <p>
+              Roses are red, violets are blue,<br/>
+              I love you more than a bowl of Tofu 😂
+            </p>
+
+            <div class="actions">
+              <button class="btn-primary" onclick="scrollToSection('journey')">
+                Next <span aria-hidden="true">→</span>
+              </button>
+              <button class="btn-ghost" onclick="scrollToSection('welcome')">
+                <span aria-hidden="true">←</span> Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional image card (keeps your local file) -->
+        <div class="card">
+          <div class="media">
+            <div class="content">
+              <h2>A little rose, for my favorite person</h2>
+              <p>Small symbol, big meaning. Like us: simple moments, deep love.</p>
+              <div class="pill-row">
+                <div class="pill">🌹 Romantic</div>
+                <div class="pill">🫶 Best friends</div>
+                <div class="pill">😄 Laughs included</div>
+              </div>
+            </div>
+            <div class="photo" title="Roses">
+              <img src="./roses.jpg" alt="Rose photo">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section id="journey">
+      <div class="wrap">
+        <div class="card">
+          <div class="content">
+            <h2>Our Journey (2015 – 2026)</h2>
+            <p>
+              Every shared smile, every whispered dream — all of it stitched together into a life I’m grateful for.
+              Our love is a fusion of modern passion and timeless commitment.
+            </p>
+
+            <div class="timeline" aria-label="Timeline">
+              <div class="step">
+                <div class="badge">1</div>
+                <div>
+                  <p><b>Then:</b> we started with hope, jokes, and brave hearts.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="badge">2</div>
+                <div>
+                  <p><b>Now:</b> we’ve built a home, a family, and a story that feels like grace.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="badge">3</div>
+                <div>
+                  <p><b>Next:</b> more adventures, more growth, more “we did it” moments.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-primary" onclick="scrollToSection('forever')">
+                Continue <span aria-hidden="true">→</span>
+              </button>
+              <button class="btn-ghost" onclick="scrollToSection('poem')">
+                <span aria-hidden="true">←</span> Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section id="forever">
+      <div class="wrap">
+        <div class="card">
+          <div class="media">
+            <div class="content">
+              <h2>Forever &amp; Always</h2>
+              <p>
+                Ngiyakutsandza, now and forever.<br/>
+                Thank you for being my peace, my laughter, my partner — my person.
+              </p>
+
+              <div class="pill-row">
+                <div class="pill">🤍 Safe place</div>
+                <div class="pill">🔥 Still choosing you</div>
+                <div class="pill">💍 Always</div>
+              </div>
+
+              <div class="actions">
+                <button class="btn-primary" onclick="scrollToSection('welcome')">
+                  Replay Our Story <span aria-hidden="true">↻</span>
+                </button>
+                <button class="btn-ghost" onclick="shareLink()">
+                  Share this page
+                </button>
+              </div>
+
+              <div class="hint">If the “Share” button doesn’t work, just copy the URL from your browser.</div>
+            </div>
+
+            <div class="photo" title="Family photo">
+              <img src="./FamilyShoot-24.jpg" alt="Family photo">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Optional background music: add your file locally and set src -->
+  <audio id="bgMusic" preload="auto" loop>
+    <!-- Example: <source src="./love-song.mp3" type="audio/mpeg"> -->
+  </audio>
 
   <script>
-    // Function for smooth scrolling to a section by its ID
+    // Smooth scroll helper
     function scrollToSection(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    
-    // Use IntersectionObserver to animate sections as they enter the viewport
-    const sections = document.querySelectorAll('section');
-    const observerOptions = {
-      threshold: 0.3
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        } else {
-          entry.target.classList.remove('visible');
-        }
+
+    // IntersectionObserver: reveal cards on scroll
+    const cards = document.querySelectorAll('.card');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
       });
-    }, observerOptions);
-    
-    sections.forEach(section => {
-      observer.observe(section);
-    });
+    }, { threshold: 0.18 });
+
+    cards.forEach(c => obs.observe(c));
+
+    // Music toggle (works if you add an mp3 source above)
+    const music = document.getElementById('bgMusic');
+    const musicText = document.getElementById('musicText');
+    const musicIcon = document.getElementById('musicIcon');
+
+    function toggleMusic(){
+      // If no source is provided, just show a friendly message
+      const hasSource = music.querySelector('source')?.src;
+      if (!hasSource) {
+        alert("Add a song file first (e.g. love-song.mp3) in the <audio> tag, then this button will play it.");
+        return;
+      }
+
+      if (music.paused) {
+        music.play().then(() => {
+          musicText.textContent = "Pause music";
+          musicIcon.textContent = "❚❚";
+        }).catch(() => {
+          alert("Tap anywhere on the page first, then try Play again (browser autoplay rules).");
+        });
+      } else {
+        music.pause();
+        musicText.textContent = "Play music";
+        musicIcon.textContent = "♪";
+      }
+    }
+
+    // Share link (modern browsers)
+    async function shareLink(){
+      const url = window.location.href;
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: document.title, url });
+        } catch (e) {
+          // user cancelled - ignore
+        }
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        alert("Link copied!");
+      } else {
+        alert("Copy the URL from your browser address bar.");
+      }
+    }
   </script>
 </body>
 </html>
